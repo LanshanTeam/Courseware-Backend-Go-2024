@@ -444,7 +444,7 @@ func main() {
 
 tips：rand 包的使用和二分法自行研究
 
-
+作业完成后将作业 `GitHub 地址`发送至 zhouran@lanshan.email ，若对 GitHub 的使用有问题，可以先网上寻找解决方法，实在不行可以私信学长。
 
 ## 参考
 <div id="refer-anchor-1"></div>
