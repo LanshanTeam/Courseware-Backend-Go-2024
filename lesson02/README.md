@@ -13,7 +13,7 @@
 - 初始化
 
  ```go
- // var arr [len]type
+ // var arr [len]type 
 // arr := [len]type{data1,data2}
 a := [3]int{1, 2}           // 未初始化元素值为 0
 b := [...]int{1, 2, 3}      // 通过初始化值确定数组长度
