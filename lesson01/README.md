@@ -8,7 +8,7 @@ Go是从2007年末由 Robert Griesemer, Rob Pike, Ken Thompson 主持开发，�
 按照惯例，介绍所有编程语言的第一个程序都是“Hello, World!”，这里我也不打破这个惯例：
 ```go
 package main
-
+ 
 import "fmt"
 
 func main() {
