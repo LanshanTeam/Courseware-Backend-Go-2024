@@ -343,7 +343,7 @@ SQL 语句通常由以下几个组成部分构成：
   INSERT INTO employees (name, department, salary) VALUES ('John Doe', 'HR', 50000);
   ```
 
-3. **UPDATE **
+3. **UPDATE**
 
 - `UPDATE` 后指定要更新的表，`SET` 后列出需要更新的列和新值。
 
@@ -355,7 +355,7 @@ SQL 语句通常由以下几个组成部分构成：
   UPDATE employees SET salary = 55000 WHERE name = 'John Doe';
   ```
 
-4. **DELETE **
+4. **DELETE**
 
 - `DELETE FROM` 后指定要删除记录的表。
 
