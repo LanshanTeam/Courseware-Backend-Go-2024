@@ -450,7 +450,7 @@ SELECT * FROM employees WHERE hire_date = '2024-01-01';
 
 ```bash
 go get -u gorm.io/gorm
-go get -u gorm.io/driver
+go get -u gorm.io/driver/mysql
 ```
 
 #### 连接到数据库
