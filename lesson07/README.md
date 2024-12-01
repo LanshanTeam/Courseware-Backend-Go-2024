@@ -271,7 +271,7 @@ SQL 语句通常由以下几个组成部分构成：
 - 删除所有数据：
 
   ```sql
-  sqlCopy Code
+  truncate table_name
   ```
 
 **规则**：
