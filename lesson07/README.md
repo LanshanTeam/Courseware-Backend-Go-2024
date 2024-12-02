@@ -644,7 +644,7 @@ func Migrate() {
 
 大家尽量完成，也是**做多少交多少**，遇到困难都可以来问
 
-把仓库地址发送到邮箱`jiangjianhua@lanshan.com`即可
+把仓库地址发送到邮箱`jiangjianhua@lanshan.email`即可
 
 
 
