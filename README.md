@@ -14,6 +14,6 @@
 | 7    | mysql                   |                                                             | 蒋建华 |
 | 8    | redis，mongodb          |                                                             | 李灏宇 |
 | 9    | linux                   | linux基本使用，linux基本原理                                | 龙旭   |
-| 10   | docker                  |                                                             |        |
+| 10   | docker                  | docker 基本使用，docker 基本原理                            | 周冉   |
 | 11   | 单体项目实战            |                                                             |        |
 
