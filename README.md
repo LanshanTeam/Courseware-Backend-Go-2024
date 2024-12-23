@@ -15,5 +15,5 @@
 | 8    | redis，mongodb          |                                                             | 李灏宇 |
 | 9    | linux                   | linux基本使用，linux基本原理                                | 龙旭   |
 | 10   | docker                  | docker 基本使用，docker 基本原理                            | 周冉   |
-| 11   | 单体项目实战            |                                                             |        |
+| 11   | 单体项目实战            | viper,zap,架构设计，代码规范，目录结构，RESTful API         | 黄大宇 |
 
