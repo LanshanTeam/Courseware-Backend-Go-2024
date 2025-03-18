@@ -92,7 +92,6 @@ Content-Type: text/html
 
 实操一下smtp协议,注意鉴权时的base64编码
 
-授权码：RH6Dd37VUJki73aB
 
 ~~~
 220 163.com Anti-spam GT for Coremail System (163com[20141201])
@@ -110,8 +109,8 @@ RCPT TO <目标>
 250 Mail OK
 DATA
 354 End data with <CR><LF>.<CR><LF>
-From:19115598198@163.com 
-TO: 437653103@qq.com
+From:这里填源邮箱地址
+TO: 这里填目标邮箱地址
 Subject: test               
 
 lalalallalalalalalal886
