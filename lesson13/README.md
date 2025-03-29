@@ -42,7 +42,7 @@
 
 电商系统同步处理：
 
-![](images/image-2.png)
+![](images/image-4.png)
 
 如果每一步都需要200ms左右，那这个调用链路和响应速度就会随着业务的扩展持续变长
 
@@ -50,7 +50,7 @@
 
 引入消息队列异步处理：
 
-![](images/image-4.png)
+![](images/image-2.png)
 
 ## 解耦
 
@@ -124,7 +124,7 @@
 
 来个图看看应该就很清晰了。
 
-![](images/image-1.png)
+![](images/image.png)
 
 基本上熟悉了消息队列常见的术语和一些概念之后，咱们再来看看消息队列常见的核心面试点。
 
@@ -500,7 +500,7 @@ Controller节点是Kafka集群中的控制器节点，负责管理集群的状�
 
 对于常用的中间件，可以轻松地在dockerhub找到镜像
 
-![](images/image.png)
+![](images/image-1.png)
 
 这里直接使用bitnami社区的kafka，下载量很多，而且文档完整
 
@@ -510,9 +510,236 @@ Controller节点是Kafka集群中的控制器节点，负责管理集群的状�
 
 这里粘一下我修改好之后的docker-compose文件，对外暴露了端口，添加了用户密码的校验
 
+```yaml
+services:
+  kafka-0:
+    image: docker.io/bitnami/kafka:3.9
+    ports:
+      # kafka-0 暴露 9094 端口
+      - "9094:9094"
+    environment:
+      # Kafka KRaft 配置
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-0:9093,1@kafka-1:9093,2@kafka-2:9093
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      # 监听器配置 - 修改为支持SASL
+      - KAFKA_CFG_LISTENERS=SASL_PLAINTEXT://:9092,CONTROLLER://:9093,SASL_EXTERNAL://0.0.0.0:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=SASL_PLAINTEXT://kafka-0:9092,SASL_EXTERNAL://你的ip:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=SASL_PLAINTEXT:SASL_PLAINTEXT,CONTROLLER:PLAINTEXT,SASL_EXTERNAL:SASL_PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=SASL_PLAINTEXT
+      # SASL配置
+      - KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN
+      - KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN
+      # cluster
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+      # 认证配置
+      - KAFKA_CLIENT_USERS=user
+      - KAFKA_CLIENT_PASSWORDS=password
+    volumes:
+      - kafka_0_data:/bitnami/kafka
+
+  kafka-1:
+    image: docker.io/bitnami/kafka:3.9
+    ports:
+      # kafka-1 暴露 9095 端口
+      - "9095:9094"
+    environment:
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-0:9093,1@kafka-1:9093,2@kafka-2:9093
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      # 监听器配置 - 修改为支持SASL
+      - KAFKA_CFG_LISTENERS=SASL_PLAINTEXT://:9092,CONTROLLER://:9093,SASL_EXTERNAL://0.0.0.0:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=SASL_PLAINTEXT://kafka-1:9092,SASL_EXTERNAL://你的ip:9095
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=SASL_PLAINTEXT:SASL_PLAINTEXT,CONTROLLER:PLAINTEXT,SASL_EXTERNAL:SASL_PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=SASL_PLAINTEXT
+      # SASL配置
+      - KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN
+      - KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN
+      # cluster
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+      # 认证配置
+      - KAFKA_CLIENT_USERS=user
+      - KAFKA_CLIENT_PASSWORDS=password
+    volumes:
+      - kafka_1_data:/bitnami/kafka
+
+  kafka-2:
+    image: docker.io/bitnami/kafka:3.9
+    ports:
+      # kafka-2 暴露 9096 端口
+      - "9096:9094"
+    environment:
+      - KAFKA_CFG_NODE_ID=2
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-0:9093,1@kafka-1:9093,2@kafka-2:9093
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      # 监听器配置 - 修改为支持SASL
+      - KAFKA_CFG_LISTENERS=SASL_PLAINTEXT://:9092,CONTROLLER://:9093,SASL_EXTERNAL://0.0.0.0:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=SASL_PLAINTEXT://kafka-2:9092,SASL_EXTERNAL://你的ip:9096
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=SASL_PLAINTEXT:SASL_PLAINTEXT,CONTROLLER:PLAINTEXT,SASL_EXTERNAL:SASL_PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=SASL_PLAINTEXT
+      # SASL配置
+      - KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN
+      - KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN
+      # cluster
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
+      # 认证配置
+      - KAFKA_CLIENT_USERS=user
+      - KAFKA_CLIENT_PASSWORDS=password
+    volumes:
+      - kafka_2_data:/bitnami/kafka
+
+volumes:
+  kafka_0_data:
+    driver: local
+  kafka_1_data:
+    driver: local
+  kafka_2_data:
+    driver: local
+```
+
 生产者示例
 
+```go
+func main() {
+    topic := "my-topic"
+    partition := 0
+
+    // 创建SASL认证机制（使用用户名和密码）
+    mechanism := plain.Mechanism{
+       Username: "user",
+       Password: "password",
+    }
+
+    // 创建无TLS的Dialer（因为我们配置的是SASL_PLAINTEXT）
+    dialer := &kafka.Dialer{
+       Timeout:       10 * time.Second,
+       DualStack:     true,
+       SASLMechanism: mechanism,
+    }
+
+    // 连接至Kafka集群的Leader节点
+    conn, err := dialer.DialLeader(context.Background(), "tcp", "你的ip:9094", topic, partition)
+    if err != nil {
+       log.Fatal("failed to dial leader:", err)
+    }
+
+    // 设置发送消息的超时时间
+    conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+
+    // 发送消息
+    _, err = conn.WriteMessages(
+       kafka.Message{Value: []byte("原神启动!")},
+       kafka.Message{Value: []byte("星铁启动!")},
+       kafka.Message{Value: []byte("绝区零启动!")},
+    )
+    if err != nil {
+       log.Fatal("failed to write messages:", err)
+    }
+    fmt.Println("write messages success")
+
+    // 关闭连接
+    if err := conn.Close(); err != nil {
+       log.Fatal("failed to close writer:", err)
+    }
+}
+```
+
 消费者示例
+
+```go
+func main() {
+    // 配置信息
+    topic := "my-topic"
+    groupID := "my-consumer-group"
+    brokers := []string{"你的ip:9094"}
+
+    // 创建SASL认证机制
+    mechanism := plain.Mechanism{
+       Username: "user",
+       Password: "password",
+    }
+
+    // 配置Dialer (不使用TLS，因为我们使用的是SASL_PLAINTEXT)
+    dialer := &kafka.Dialer{
+       Timeout:       10 * time.Second,
+       DualStack:     true,
+       SASLMechanism: mechanism,
+    }
+
+    // 创建Reader配置
+    r := kafka.NewReader(kafka.ReaderConfig{
+       Brokers:         brokers,
+       Topic:           topic,
+       GroupID:         groupID,           // 消费者组ID
+       MinBytes:        10e3,              // 10KB 最小批处理大小
+       MaxBytes:        10e6,              // 10MB 最大批处理大小
+       MaxWait:         1 * time.Second,   // 最长等待时间
+       StartOffset:     kafka.FirstOffset, // 从最早的消息开始（可选用 kafka.LastOffset 从最新的开始）
+       ReadLagInterval: -1,                // 禁用滞后报告
+       Dialer:            dialer,            // 使用带SASL的dialer
+    })
+
+    // 捕获中断信号以优雅退出
+    sigchan := make(chan os.Signal, 1)
+    signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
+
+    // 创建上下文，允许我们控制消费循环
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    // 在单独的goroutine中处理信号
+    go func() {
+       sig := <-sigchan
+       fmt.Printf("捕获到信号: %v, 正在关闭消费者...\n", sig)
+       cancel()
+    }()
+
+    fmt.Println("开始消费消息，按 Ctrl+C 停止...")
+
+    // 消费消息循环
+    for {
+       select {
+       case <-ctx.Done():
+          fmt.Println("上下文已取消，退出消费循环")
+          if err := r.Close(); err != nil {
+             log.Fatalf("关闭reader失败: %v", err)
+          }
+          return
+       default:
+          // 读取消息
+          m, err := r.ReadMessage(ctx)
+          if err != nil {
+             // 检查是否因为上下文取消而中断
+             if ctx.Err() != nil {
+                continue
+             }
+             log.Printf("读取消息失败: %v", err)
+             continue
+          }
+
+          // 处理消息
+          fmt.Printf("收到消息: 主题=%s, 分区=%d, 偏移量=%d, 键=%s, 值=%s\n",
+             m.Topic, m.Partition, m.Offset, string(m.Key), string(m.Value))
+
+          // 这里可以添加您的业务逻辑来处理消息
+
+          // kafka-go 自动处理提交偏移量，除非您使用了CommitMessages方法手动控制
+       }
+    }
+}
+```
 
 关于更多的怎么使用go语言操作kafka这里就不多赘述了，网上的资料很多，可以很方便的集成到项目中
 
